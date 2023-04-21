@@ -1,2 +1,22 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        String frcYear = '2022'
+        File frcHome
+        String publicFolder = System.getenv('PUBLIC')
+        if (publicFolder == null) {
+            publicFolder = "C:\\Users\\Public"
+        }
+        def homeRoot = new File(publicFolder, "wpilib")
+        frcHome = new File(homeRoot, frcYear)
+        def frcHomeMaven = new File(frcHome, 'maven')
+        maven {
+            name 'frcHome'
+            url frcHomeMaven
+        }
+    }
+}
+
 rootProject.name = 'NetworkTableAnnotate'
 include('lib')

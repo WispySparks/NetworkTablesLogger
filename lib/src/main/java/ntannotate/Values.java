@@ -2,7 +2,7 @@ package ntannotate;
 
 public class Values {
 
-    @NetworkTables(Name = "Length")
+    @LogNT(Name = "Length")
     private double length;
 
     Values(int length) {
