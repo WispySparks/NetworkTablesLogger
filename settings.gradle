@@ -18,5 +18,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'NetworkTableAnnotate'
+rootProject.name = 'NetworkTablesLogger'
 include('lib')
