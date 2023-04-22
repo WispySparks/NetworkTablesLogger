@@ -9,9 +9,17 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
+    implementation 'org.reflections:reflections:0.10.2'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 application {
