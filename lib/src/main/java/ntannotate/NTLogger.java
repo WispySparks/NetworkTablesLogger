@@ -28,33 +28,51 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public final class NTLogger {
 
     private static Class<LogNT> annotation = LogNT.class;
-    private static Reflections reflections = new Reflections(
-        new ConfigurationBuilder()
-        .addUrls(ClasspathHelper.forClass(Main.class))
-        .addScanners(Scanners.FieldsAnnotated, Scanners.MethodsAnnotated)
-    );
-    private static Set<Field> staticFields = reflections.getFieldsAnnotatedWith(annotation)
-        .stream()
-        .filter(NTLogger::filterStaticField)
-        .collect(Collectors.toSet());
-    private static Set<Method> staticMethods = reflections.getMethodsAnnotatedWith(annotation)
-        .stream()
-        .filter(NTLogger::filterStaticMethod)
-        .collect(Collectors.toSet());
-    static {
-        staticFields.forEach(NTLogger::setAccessible);
-        staticMethods.forEach(NTLogger::setAccessible);
-    }
+    private static Set<Field> staticFields;
+    private static Set<Method> staticMethods;
     private static HashMap<Object, ReflectionData> instanceFieldsAndMethods = new HashMap<>();
     private static NetworkTable table = NetworkTableInstance.getDefault().getTable("NT Logging");
+    private static boolean initialized = false;
 
     private NTLogger() {}
+
+    /**
+     * Initializes the logger using the specified class as the root for package purposes. 
+     * @param clazz - Make this a class in the top level package of your project (ex: Main.class)
+     */
+    public static void initialize(Class<?> clazz) {
+        Reflections reflections = new Reflections(
+            new ConfigurationBuilder()
+            .addUrls(ClasspathHelper.forClass(clazz))
+            .addScanners(Scanners.FieldsAnnotated, Scanners.MethodsAnnotated)
+        );
+        staticFields = reflections.getFieldsAnnotatedWith(annotation)
+            .stream()
+            .filter(NTLogger::filterStaticField)
+            .collect(Collectors.toSet());
+        staticMethods = reflections.getMethodsAnnotatedWith(annotation)
+            .stream()
+            .filter(NTLogger::filterStaticMethod)
+            .collect(Collectors.toSet());
+        staticFields.forEach(NTLogger::setAccessible);
+        staticMethods.forEach(NTLogger::setAccessible);
+        initialized = true;
+    }
+
+    /**
+     * Call this in robot periodic to log everything to network tables.
+     */
+    public static void log() {
+        if (!initialized) throw new IllegalStateException("NTLogger was never initialized!");
+        System.out.println(table.getPath());
+    }
 
     /**
      * Adds an instance to the logger so that instance variables and methods can be retrieved and logged on said instance.
      * @param obj - Instance to get fields and methods from
      */
     public static void addInstance(Object obj) {
+        if (!initialized) throw new IllegalStateException("NTLogger was never initialized!");
         Set<Field> fields = Set.of(obj.getClass().getDeclaredFields())
             .stream()
             .filter((f) -> f.isAnnotationPresent(annotation))
@@ -73,14 +91,8 @@ public final class NTLogger {
         ));
     }
 
-    /**
-     * Call this in robot periodic to log everything to network tables.
-     */
-    public static void log() {
-        System.out.println(table.getPath());
-    }
-
     public static String dump() {
+        if (!initialized) throw new IllegalStateException("NTLogger was never initialized!");
         return 
         "LOGGER\n" +
         "Static Fields:\n" +

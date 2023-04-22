@@ -5,3 +5,6 @@ build
 # VSCode
 .vscode
 bin
+
+# WPILib
+.wpilib

@@ -4,6 +4,7 @@ public class Main {
     
     public static void main(String[] args) throws Exception {
         Test test = new Test(20);
+        NTLogger.initialize(Main.class);
         NTLogger.addInstance(test);
         NTLogger.log();
         System.out.println(NTLogger.dump());
