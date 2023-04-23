@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'edu.wpi.first.GradleRIO' version '2023.4.3'
+    id 'edu.wpi.first.WpilibTools' version '1.1.0'
 }
 
 repositories {
@@ -8,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation wpi.java.deps.wpilib()
+    implementation wpilibTools.deps.wpilibJava("ntcore")
     implementation 'org.reflections:reflections:0.10.2'
 }
 
@@ -18,8 +19,13 @@ java {
     }
 }
 
+def name = 'NTLogger'
+def version = '1.0'
+def destDir = file('C:\\Users\\wispy\\Desktop\\Robotics\\Repos\\Java\\TestingProject\\libs')
+
 jar {
     from sourceSets.main.allJava
-    archiveBaseName = 'NTLogger'
-    destinationDirectory = file('C:\\Users\\wispy\\Desktop\\Robotics\\Repos\\Java\\TestingProject\\libs')
+    archiveBaseName = name
+    archiveVersion = version
+    destinationDirectory = destDir
 }

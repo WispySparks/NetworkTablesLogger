@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
  * Will output this field or get method to network tables using the given name or if none is provided the field/method's name.
  */
 public @interface LogNT {
-    static final String nullVal = "NULL";
-    /** Name in NT */
-    String value() default nullVal;
+    /** Name in Network Tables */
+    String value() default NTLogger.nullVal;
 }
