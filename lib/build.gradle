@@ -19,5 +19,7 @@ java {
 }
 
 jar {
+    from sourceSets.main.allJava
     archiveBaseName = 'NTLogger'
+    destinationDirectory = file('C:\\Users\\wispy\\Desktop\\Robotics\\Repos\\Java\\TestingProject\\libs')
 }
