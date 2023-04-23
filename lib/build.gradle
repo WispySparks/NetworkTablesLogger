@@ -21,3 +21,15 @@ jar {
     archiveBaseName = 'NTLogger'
     archiveVersion = '1.0'
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.WispySparks'
+            artifactId = 'NTLogger'
+            version = '1.0'
+
+            from components.java
+        }
+    }
+}
