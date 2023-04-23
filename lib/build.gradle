@@ -1,8 +1,11 @@
 plugins {
     id 'java'
+    id 'maven-publish'
     id 'edu.wpi.first.GradleRIO' version '2023.4.3'
     id 'edu.wpi.first.WpilibTools' version '1.1.0'
 }
+
+group = 'com.github.WispySparks'
 
 repositories {
     mavenCentral()
