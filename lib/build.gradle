@@ -1,15 +1,13 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    // id 'edu.wpi.first.GradleRIO' version '2023.4.3'
-    // id 'edu.wpi.first.WpilibTools' version '1.1.0'
 }
 
 group = 'com.github.WispySparks'
 
 repositories {
     mavenCentral()
-    maven { url = 'https://frcmaven.wpi.edu/ui/native/release/' }
+    maven { url = 'https://frcmaven.wpi.edu/artifactory/release/' }
 }
 
 dependencies {
@@ -23,11 +21,8 @@ java {
     }
 }
 
-def name = 'NTLogger'
-def version = '1.0'
-
 jar {
     from sourceSets.main.allJava
-    archiveBaseName = name
-    archiveVersion = version
+    archiveBaseName = 'NTLogger'
+    archiveVersion = '1.0'
 }
