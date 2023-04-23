@@ -9,10 +9,11 @@ group = 'com.github.WispySparks'
 
 repositories {
     mavenCentral()
+    maven { url = 'https://frcmaven.wpi.edu/ui/native/release/' }
 }
 
 dependencies {
-    implementation wpilibTools.deps.wpilibJava("ntcore")
+    implementation 'edu.wpi.first.ntcore:ntcore-java:2023.4.3'
     implementation 'org.reflections:reflections:0.10.2'
 }
 
@@ -24,11 +25,9 @@ java {
 
 def name = 'NTLogger'
 def version = '1.0'
-def destDir = file('C:\\Users\\wispy\\Desktop\\Robotics\\Repos\\Java\\TestingProject\\libs')
 
 jar {
     from sourceSets.main.allJava
     archiveBaseName = name
     archiveVersion = version
-    destinationDirectory = destDir
 }
