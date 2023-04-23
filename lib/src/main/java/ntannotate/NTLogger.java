@@ -65,6 +65,13 @@ public final class NTLogger {
     public static void log() {
         if (!initialized) throw new IllegalStateException("NTLogger was never initialized!");
         System.out.println(table.getPath());
+        for (Field field : staticFields) {
+            try {
+                System.out.println(field.getType().getName() + " " + field.getName() + " " + field.get(null));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
