@@ -1,11 +1,15 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'edu.wpi.first.GradleRIO' version '2023.4.3'
     id 'edu.wpi.first.WpilibTools' version '1.1.0'
 }
 
 group = 'com.github.WispySparks'
+def name = 'NTLogger'
+def classifier = 'shadow'
+def version = '1.0'
 
 repositories {
     mavenCentral()
@@ -17,19 +21,36 @@ dependencies {
 }
 
 jar {
-    from sourceSets.main.allJava
-    archiveBaseName = 'NTLogger'
-    archiveVersion = '1.0'
+    from sourceSets.main.allSource
+    archiveBaseName = name
+    archiveVersion = version
+}
+
+shadowJar {
+    from sourceSets.main.allSource
+    archiveBaseName = name
+    archiveClassifier = classifier
+    archiveVersion = version
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'com.github.WispySparks'
-            artifactId = 'NTLogger'
-            version = '1.0'
+            groupId = group
+            artifactId = name
+            version = version
 
             from components.java
         }
+    }
+}
+
+def localPath = "C:\\Users\\armad\\Robotics\\TestingGrounds\\RobotTesting\\libs" 
+
+tasks.register('buildLocal') {
+    dependsOn('clean', 'shadowJar')
+    copy {
+        from shadowJar.outputs.files.singleFile
+        into file(localPath)
     }
 }

@@ -13,8 +13,10 @@ import org.reflections.scanners.Scanners;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
+import edu.wpi.first.networktables.GenericPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.Topic;
 
 /**
  * Used to log fields and methods(Can't have parameters 
@@ -32,7 +34,9 @@ public final class NTLogger {
     private static Set<Field> staticFields;
     private static Set<Method> staticMethods;
     private static HashMap<Object, ReflectionData> instanceFieldsAndMethods = new HashMap<>();
-    private static NetworkTable table = NetworkTableInstance.getDefault().getTable("NT Logging");
+    private static HashMap<Loggable, Integer> indexedLoggables = new HashMap<>();
+    private static HashMap<Topic, GenericPublisher> publishers = new HashMap<>();
+    private static NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("Logging");
     private static boolean initialized = false;
 
     private NTLogger() {}
@@ -65,7 +69,16 @@ public final class NTLogger {
      */
     public static void log() {
         if (!initialized) throw new IllegalStateException("NTLogger was never initialized!");
-        table.getClass();
+        indexedLoggables.forEach((loggable, index) -> {
+            NetworkTable table = mainTable.getSubTable(loggable.getClass().getSimpleName() + "-" + index);
+            loggable.log().forEach((name, val) -> {
+                Topic topic = table.getTopic(name);
+                if (!publishers.containsKey(topic)) {
+                    publishers.put(topic, topic.genericPublish(val.getType().getValueStr()));
+                }
+                publishers.get(topic).set(val);
+            });
+        });
     }
 
     /**
@@ -90,6 +103,10 @@ public final class NTLogger {
             fields,
             methods
         ));
+    }
+
+    public static void register(Loggable obj) {
+        indexedLoggables.put(obj, indexedLoggables.size());
     }
 
     public static String dump() {
